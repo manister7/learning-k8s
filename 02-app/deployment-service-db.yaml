@@ -40,12 +40,17 @@ spec:
                   key: DB_ROOT_PASSWORD
           volumeMounts:
             - name: init-sql
-              mountPath: /docker-entrypoint-initdb.d/init.sql
+              mountPath: /docker-entrypoint-initdb.d/init.sql   # inside the container
               subPath: init.sql
+            - name: mysql-data
+              mountPath: /var/lib/mysql   # data inside the container
       volumes:
         - name: init-sql
           configMap:
             name: db-init-sql
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: mysql-pvc
 ---
 apiVersion: v1
 kind: Service
