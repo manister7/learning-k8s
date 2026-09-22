@@ -1,5 +1,5 @@
 flask:
-  image: manister7/flask-mysql-backend:1
+  image: manister7/flask-mysql-backend:2
   replicas: 1
   service:
     type: NodePort
