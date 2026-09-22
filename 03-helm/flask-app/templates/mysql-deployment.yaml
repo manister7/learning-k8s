@@ -15,19 +15,44 @@ spec:
       containers:
         - name: mysql
           image: {{ .Values.mysql.image }}
+          ports:
+            - containerPort: 3306
           env:
             - name: MYSQL_DATABASE
-              value: {{ .Values.mysql.database }}
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_NAME
             - name: MYSQL_USER
-              value: {{ .Values.mysql.user }}
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: DB_USER
             - name: MYSQL_PASSWORD
-              value: {{ .Values.mysql.password }}
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: DB_PASSWORD
             - name: MYSQL_ROOT_PASSWORD
-              value: {{ .Values.mysql.rootPassword }}
+              valueFrom:
+                secretKeyRef:
+                  name: app-secret
+                  key: DB_ROOT_PASSWORD
+            - name: MYSQL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DB_HOST
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
+            - name: init-sql
+              mountPath: /docker-entrypoint-initdb.d/init.sql
+              subPath: init.sql
       volumes:
         - name: mysql-data
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-mysql-pvc
+        - name: init-sql
+          configMap:
+            name: db-init-sql

@@ -5,12 +5,12 @@ metadata:
   labels:
     app.kubernetes.io/managed-by: Helm
   annotations:
-    meta.helm.sh/release-name: {{ .Release.Name }}
-    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    meta.helm.sh/release-name: flask-app
+    meta.helm.sh/release-namespace: default
 spec:
   capacity:
     storage: 1Gi
   accessModes:
     - ReadWriteOnce
   hostPath:  # The data is mounted here on worker node
-    path: /minikube/data-mysql
+    path: /minikube/data-volume
